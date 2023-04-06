@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 echo
 echo
 echo
@@ -184,33 +183,33 @@ if [[ $filter_department == "Y" || $filter_department == "y" ]]; then
     if [[ $filter_salary == "Y" || $filter_salary == "y" ]]; then
         # search with department filter and salary filter
         if [[ $salary_filter == "above" ]]; then
-            awk -F':' -v name="$search_name" -v dep="$search_department" -v sal="$salary_value" '($1 ~ name && $2 ~ dep && $3 >= sal) {print $0}' records.txt
+            awk '$4 > $salary_filter' records.txt
         else
-            awk -F':' -v name="$search_name" -v dep="$search_department" -v sal="$salary_value" '($1 ~ name && $2 ~ dep && $3 <= sal) {print $0}' records.txt
+            awk -F':' -v Name="$search_name" -v Department="$search_department" -v Salary="$salary_value" '($1 ~ Name && $2 ~ Department && $3 <= Salary) {print $0}' records.txt
         fi
     else
         # search with department filter only
-        awk -F':' -v name="$search_name" -v dep="$search_department" '($1 ~ name && $2 ~ dep) {print $0}' records.txt
+        awk -F':' -v Name="$search_name" -v Department="$search_department" '($1 ~ Name && $2 ~ Department) {print $0}' records.txt
     fi
 elif [[ $filter_salary == "Y" || $filter_salary == "y" ]]; then
     # search with salary filter only
     if [[ $salary_filter == "above" ]]; then
-        awk -F':' -v name="$search_name" -v sal="$salary_value" '($1 ~ name && $3 >= sal) {print $0}' records.txt
+        awk -F':' -v Name="$search_name" -v Salary="$salary_value" '($1 ~ Name && $3 >= Salary) {print $0}' records.txt
     else
-        awk -F':' -v name="$search_name" -v sal="$salary_value" '($1 ~ name && $3 <= sal) {print $0}' records.txt
+        awk -F':' -v Name="$search_name" -v Salary="$salary_value" '($1 ~ Name && $3 <= Salary) {print $0}' records.txt
     fi
 else
     # search without filters
-    awk -F':' -v name="$search_name" '($1 ~ name) {print $1}' records.txt
+    awk -F':' -v Name="$search_name" '($1 ~ Name) {print $1}' records.txt
    fi
 
 # display total number of employees
-echo "Total number of employees: $(wc -l < records.txt)"
+echo "Total number of employees: $(grep -c "Name"  records.txt)"
 
 # display department employee belongs to
 if [[ $filter_department == "Y" || $filter_department == "y" ]]; then
     echo "Employees in department '$search_department':"
-    awk -F':' -v dep="$search_department" '($2 ~ dep) {print $0}' records.txt
+    awk -F':' -v Department="$search_department" '($2 ~ Department) {print $0}' records.txt
 fi
 
     ;;
